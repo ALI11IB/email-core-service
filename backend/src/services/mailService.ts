@@ -6,6 +6,7 @@ export const addMessage = async (data: EmailMessage): Promise<void> => {
   try {
     await client.index({
       index: 'email_messages',
+      id: data.userEmail, // Use userEmail as the unique identifier
       body: {
         userEmail: data?.userEmail,
         id: data?.id,
@@ -80,5 +81,41 @@ export async function addMailBoxDetails(data: MailBoxDetails) {
     await client.indices.refresh({ index: 'mailbox_details' });
   } catch (err) {
     console.error('Error indexing data:', err);
+  }
+}
+
+export async function searchMessages(email?: string) {
+  try {
+    // Search for email messages for a specific user
+    const emailMessages: any = await client.search({
+      index: 'email_messages',
+      body: {
+        query: {
+          match: { userEmail: email },
+        },
+      },
+    });
+    console.log('Email messages:', emailMessages);
+    return emailMessages.body.hits.hits;
+  } catch (err) {
+    console.error('Error searching data:', err);
+  }
+}
+
+export async function searcMailBoxDetails(email?: string) {
+  try {
+    // Search for email messages for a specific user
+    const emailMessages: any = await client.search({
+      index: 'mailbox_details',
+      body: {
+        query: {
+          match: { userEmail: email },
+        },
+      },
+    });
+    console.log('Email messages:', emailMessages);
+    return emailMessages.body.hits.hits;
+  } catch (err) {
+    console.error('Error searching data:', err);
   }
 }

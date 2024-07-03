@@ -1,8 +1,9 @@
 import { connectToRabbitMQ, getChannel } from '../config/rabbitmq';
+import { User } from '../models';
 import { syncUserData } from '../services/syncService';
-import { User } from '../types'; // Assuming you have a types file for User
 
-const consumeMessages = async () => {
+export const consumeMessages = async () => {
+  debugger;
   await connectToRabbitMQ();
   const channel = getChannel();
   const queue = 'emailSyncQueue';
@@ -13,7 +14,7 @@ const consumeMessages = async () => {
 
   channel.consume(
     queue,
-    async (msg) => {
+    async (msg: any) => {
       if (msg !== null) {
         const content = msg.content.toString();
         const { user, provider }: { user: User; provider: string } = JSON.parse(content);

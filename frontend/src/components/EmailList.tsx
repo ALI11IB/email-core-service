@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { fetchEmails } from "../services/api";
 
 interface Email {
   subject: string;
@@ -12,12 +13,12 @@ const Sync: React.FC = () => {
   const [emails, setEmails] = useState<Email[]>([]);
 
   useEffect(() => {
-    const fetchEmails = async () => {
-      const response = await axios.get(`/api/emails?userId=${userId}`);
-      setEmails(response.data);
+    const getEmails = async () => {
+      const response = await fetchEmails();
+      setEmails(response);
     };
 
-    fetchEmails();
+    getEmails();
   }, [userId]);
 
   return (

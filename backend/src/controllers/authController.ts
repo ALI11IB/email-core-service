@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { getAuthUrl, handleCallback } from '../services/authService';
 import { addUser, getUser, updateUser } from '../services/userService';
 import { connectToRabbitMQ, getChannel } from '../config/rabbitmq';
-
+import jwt from 'jsonwebtoken';
+import { generateToken } from '../utils';
 export const getAuthUrlController = (req: Request, res: Response) => {
   const provider = req.query.provider as string;
   const url = getAuthUrl(provider);
@@ -11,6 +12,7 @@ export const getAuthUrlController = (req: Request, res: Response) => {
 
 export const authCallbackController = async (req: Request, res: Response) => {
   try {
+    debugger;
     const provider = req.query.provider as string;
     const code = req.query.code as string;
     const user = await handleCallback(provider, code);
@@ -37,9 +39,9 @@ export const authCallbackController = async (req: Request, res: Response) => {
     channel.sendToQueue(queue, Buffer.from(message), { persistent: true });
 
     console.log('Message sent to RabbitMQ');
-
+    const token = generateToken(existingUser.id);
     // Redirect to frontend with user information (use a JWT token for production)
-    res.redirect(`http://localhost:3001/sync?token=${existingUser.id}`);
+    res.redirect(`http://localhost:3001/emails?token=${token}`);
   } catch (error: any) {
     res.status(500).json({ error: error?.message });
   }
