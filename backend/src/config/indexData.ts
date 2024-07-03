@@ -2,7 +2,7 @@ import { EmailMessage, MailBoxDetails, User } from '../models';
 
 const client = require('../config/elasticsearch');
 
-async function indexUser(data: User) {
+export async function indexUser(data: User) {
   try {
     await client.index({
       index: 'users',
@@ -21,7 +21,7 @@ async function indexUser(data: User) {
   }
 }
 
-async function indexEmailMessages(data: EmailMessage) {
+export async function indexEmailMessages(data: EmailMessage) {
   try {
     await client.index({
       index: 'email_messages',
@@ -49,7 +49,7 @@ async function indexEmailMessages(data: EmailMessage) {
   }
 }
 
-async function indexMailBoxDetails(data: MailBoxDetails) {
+export async function indexMailBoxDetails(data: MailBoxDetails) {
   try {
     await client.index({
       index: 'mailbox_details',
@@ -65,5 +65,3 @@ async function indexMailBoxDetails(data: MailBoxDetails) {
     console.error('Error indexing data:', err);
   }
 }
-
-module.exports = { indexEmailMessages, indexMailBoxDetails, indexUser };
