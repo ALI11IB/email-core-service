@@ -17,9 +17,9 @@ export const getEmailsController = async (req: Request, res: Response) => {
   const user = await getUser(userId);
 
   if (!userId) {
-    return res.sendStatus(404); // not found
+    return res.sendStatus(401); // Unauthorized
   }
-  const mails = searchMessages(user?.email);
+  const messages = searchMessages(user?.email);
   const mailBoxDetails = searcMailBoxDetails(user?.email);
-  res.status(200).json({ mails, mailBoxDetails });
+  res.status(200).json({ messages, mailBoxDetails });
 };

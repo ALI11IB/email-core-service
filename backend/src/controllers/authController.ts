@@ -41,7 +41,7 @@ export const authCallbackController = async (req: Request, res: Response) => {
     console.log('Message sent to RabbitMQ');
     const token = generateToken(existingUser.id);
     // Redirect to frontend with user information (use a JWT token for production)
-    res.redirect(`http://localhost:3001/emails?token=${token}`);
+    res.redirect(`http://localhost:3001/sync?token=${token}`);
   } catch (error: any) {
     res.status(500).json({ error: error?.message });
   }

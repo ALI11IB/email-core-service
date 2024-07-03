@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchEmails } from "../services/api";
 
 interface Email {
@@ -9,28 +9,38 @@ interface Email {
 }
 
 const Sync: React.FC = () => {
-  const { userId } = useParams<{ userId: string }>();
-  const [emails, setEmails] = useState<Email[]>([]);
+  const [messages, setMessages] = useState<Email[]>([]);
+  const [mailBoxDetails, setMailBox] = useState<Email[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchEmails;
+  }, []);
 
   useEffect(() => {
     const getEmails = async () => {
-      const response = await fetchEmails();
-      setEmails(response);
+      const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+      const response = await fetchEmails(headers);
+      if (response?.error) {
+        alert(response?.error);
+        localStorage.removeItem("token");
+        navigate("/");
+      }
+      setMessages(response?.messages);
+      setMailBox(response?.mailBoxDetails);
     };
 
     getEmails();
-  }, [userId]);
+  }, []);
 
   return (
     <div>
       <h1>Synchronized Emails</h1>
-      <ul>
-        {emails.map((email, index) => (
-          <li key={index}>
-            <strong>{email.subject}</strong> - {email.sender}
-          </li>
-        ))}
-      </ul>
+      <ul></ul>
     </div>
   );
 };

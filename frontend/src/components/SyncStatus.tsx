@@ -1,22 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { checkSyncStatus } from "../services/api";
+import { useNavigate, useParams } from "react-router-dom";
 
 const SyncStatus: React.FC = () => {
-  const [status, setStatus] = useState<string>("Not Started");
+  const { token } = useParams<{ token: string }>();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      const currentStatus = await checkSyncStatus();
-      setStatus(currentStatus);
-    };
-
-    fetchStatus();
-  }, []);
+    if (token) {
+      localStorage.setItem("token", token);
+      navigate("/emails");
+    } else {
+      alert("Sync failed, try again please");
+      navigate("/");
+    }
+  }, [token]);
 
   return (
-    <div>
-      <h2>Synchronization Status</h2>
-      <p>{status}</p>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <h2 style={{ color: "gray" }}>Synchronizing.....</h2>
     </div>
   );
 };
