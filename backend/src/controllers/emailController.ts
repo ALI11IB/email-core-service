@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { verifyToken } from '../utils';
-import { searcMailBoxDetails, searchMessages } from '../services/mailService';
+import { getMailBoxDetails, getMessages, searcMailBoxDetails, searchMessages } from '../services/mailService';
 import { getUser } from '../services/userService';
 
 export const getEmailsController = async (req: Request, res: Response) => {
@@ -15,14 +15,10 @@ export const getEmailsController = async (req: Request, res: Response) => {
     return res.sendStatus(401); // Unauthorized
   }
   const user = await getUser(userId);
-
-  console.log('==============user======================');
-  console.log(user);
-  console.log('================user====================');
   if (!user) {
     return res.sendStatus(401); // Unauthorized
   }
-  const messages = searchMessages(user?.email);
-  const mailBoxDetails = searcMailBoxDetails(user?.email);
+  const messages = await getMessages(user?.email);
+  const mailBoxDetails = await getMailBoxDetails(user?.email);
   res.status(200).json({ messages, mailBoxDetails });
 };

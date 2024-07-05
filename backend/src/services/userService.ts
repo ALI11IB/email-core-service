@@ -10,10 +10,13 @@ export const getUser = async (id: string): Promise<User | null> => {
     });
     return res._source as User;
   } catch (error: any) {
-    if (error.meta.statusCode === 404) {
-      return null;
-    }
-    throw error;
+    console.log('==============error======================');
+    console.log(error);
+    console.log('===================error=================');
+    // if (error.meta.statusCode === 404) {
+    //   return null;
+    // }
+    return null;
   }
 };
 
@@ -21,7 +24,7 @@ export const addUser = async (data: User): Promise<void> => {
   try {
     await client.index({
       index: 'users',
-      id: data?.email,
+      id: data?.id,
       body: {
         id: data?.id,
         email: data?.email,
@@ -41,7 +44,7 @@ export const updateUser = async (data: User): Promise<void> => {
   try {
     await client.update({
       index: 'users',
-      id: data?.email,
+      id: data?.id,
       body: {
         doc: data,
       },

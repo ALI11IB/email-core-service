@@ -38,8 +38,8 @@ export class OutlookProvider implements IEmailProvider {
       },
     });
     return {
-      id: uuidv4(),
-      email: userResponse.data.mail,
+      id: userResponse?.data?.id + '_' + userResponse?.data?.mail?.split('@')[0] ?? '',
+      email: userResponse?.data?.mail,
       accessToken,
       provider: 'outlook',
     };
