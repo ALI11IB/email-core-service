@@ -8,7 +8,7 @@ export function generateToken(userId: string) {
   };
 
   const options = {
-    expiresIn: '1h', // Token expires in 1 hour
+    expiresIn: '24h', // Token expires in 1 hour
   };
 
   const token = jwt.sign(payload, SECRET_KEY, options);
@@ -16,9 +16,10 @@ export function generateToken(userId: string) {
 }
 
 export function verifyToken(token: string) {
-  return jwt.verify(token, SECRET_KEY, (err: any, decoded: any) => {
-    if (err) {
-      return undefined; // Forbidden
-    } else return decoded;
-  });
+  try {
+    var decoded = jwt.verify(token, SECRET_KEY);
+    return decoded;
+  } catch (err) {
+    return err;
+  }
 }

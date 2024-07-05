@@ -8,8 +8,8 @@ export interface User {
 export interface EmailMessage {
   userEmail: string;
   id: string;
-  sender: string;
-  from: string;
+  sender: any;
+  from: any;
   createdDateTime: string;
   receivedDateTime: string;
   sentDateTime: string;

@@ -43,6 +43,9 @@ export const authCallbackController = async (req: Request, res: Response) => {
     // Redirect to frontend with user information (use a JWT token for production)
     res.redirect(`http://localhost:3001/sync?token=${token}`);
   } catch (error: any) {
+    console.log('===============error in auth controller=====================');
+    console.log(error);
+    console.log('===============error in auth controller=====================');
     res.status(500).json({ error: error?.message });
   }
 };

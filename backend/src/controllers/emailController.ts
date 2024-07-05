@@ -10,13 +10,16 @@ export const getEmailsController = async (req: Request, res: Response) => {
   if (!token) {
     return res.sendStatus(401); // Unauthorized
   }
-  const userId = verifyToken(token);
+  const { userId } = verifyToken(token);
   if (!userId) {
     return res.sendStatus(401); // Unauthorized
   }
   const user = await getUser(userId);
 
-  if (!userId) {
+  console.log('==============user======================');
+  console.log(user);
+  console.log('================user====================');
+  if (!user) {
     return res.sendStatus(401); // Unauthorized
   }
   const messages = searchMessages(user?.email);

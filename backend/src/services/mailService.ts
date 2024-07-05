@@ -10,8 +10,8 @@ export const addMessage = async (data: EmailMessage): Promise<void> => {
       body: {
         userEmail: data?.userEmail,
         id: data?.id,
-        sender: data?.sender,
-        from: data?.from,
+        sender: data?.sender?.emailAddress?.address,
+        from: data?.from?.emailAddress?.address,
         createdDateTime: data?.createdDateTime,
         receivedDateTime: data?.receivedDateTime,
         sentDateTime: data?.sentDateTime,
@@ -33,6 +33,9 @@ export const addMessage = async (data: EmailMessage): Promise<void> => {
 
 export async function addMailBoxDetails(data: MailBoxDetails) {
   try {
+    console.log('====================================');
+    console.log(data);
+    console.log('====================================');
     // Check if the mailbox details already exist for the user
     const exists = await client.exists({
       index: 'mailbox_details',
