@@ -51,6 +51,9 @@ export class OutlookProvider implements IEmailProvider {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+    console.log('================fetchEmails====================');
+    console.log(response.data.value);
+    console.log('================fetchEmails====================');
     return response.data.value;
   }
 
@@ -61,10 +64,9 @@ export class OutlookProvider implements IEmailProvider {
       },
     });
 
-    const mailboxDetails = response.data.value.map((folder: any) => ({
-      name: folder.displayName,
-      folderId: folder.id,
-    }));
+    console.log('==============fetchMailboxDetails======================');
+    console.log(response.data.value);
+    console.log('================fetchMailboxDetails====================');
     return response.data.value;
   }
 }

@@ -15,6 +15,7 @@ const indicesConfig = {
         isDraft: { type: 'boolean' },
         inferenceClassification: { type: 'keyword' },
         body: { type: 'object' },
+        parentFolderId: { type: 'keyword' },
       },
     },
   },

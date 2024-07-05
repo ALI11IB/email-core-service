@@ -38,6 +38,7 @@ export const addMessage = async (userEmail: string, emails: Array<EmailMessage>)
           isDraft: data?.isDraft,
           inferenceClassification: data?.inferenceClassification,
           body: data?.body,
+          parentFolderId: data?.parentFolderId,
         });
       }
     }

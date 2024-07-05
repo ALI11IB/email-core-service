@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomDrawer from "../components/drawer";
+import { EmailsContext, EmailsProvider } from "../context";
 import { fetchEmails } from "../services/api";
 
-interface Email {
-  subject: string;
-  sender: string;
-}
-
 const EmailList: React.FC = () => {
-  const [messages, setMessages] = useState<Email[]>([]);
-  const [mailBoxDetails, setMailBox] = useState<Email[]>([]);
   const navigate = useNavigate();
+  const context = useContext<any>(EmailsContext);
 
   useEffect(() => {
     const getEmails = async () => {
@@ -29,10 +24,10 @@ const EmailList: React.FC = () => {
         }
       }
       if (response?.messages) {
-        setMessages(response?.messages);
+        context?.setMessages(response?.messages);
       }
       if (response?.mailBoxDetails) {
-        setMailBox(response?.mailBoxDetails);
+        context?.setMailBox(response?.mailBoxDetails);
       }
     };
 

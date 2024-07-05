@@ -19,6 +19,9 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import NavBar from "./navbar";
+import { useContext, useEffect } from "react";
+import { EmailsContext } from "../context";
+import { MailBox } from "../types";
 
 const drawerWidth = 240;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -52,7 +55,15 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function CustomDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const {
+    mailBoxDetails: { mailboxes },
+  } = useContext<any>(EmailsContext);
 
+  useEffect(() => {
+    console.log("====================================");
+    console.log(mailboxes);
+    console.log("====================================");
+  }, [mailboxes]);
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -82,30 +93,20 @@ export default function CustomDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {mailboxes &&
+            mailboxes?.length &&
+            mailboxes.map((box: MailBox, index: number) => (
+              <ListItem key={box?.displayName} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={box?.displayName} />
+                </ListItemButton>
+              </ListItem>
+            ))}
         </List>
         <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
