@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import CustomDrawer from "../components/drawer";
 import { fetchEmails } from "../services/api";
 
 interface Email {
@@ -8,14 +8,10 @@ interface Email {
   sender: string;
 }
 
-const Sync: React.FC = () => {
+const EmailList: React.FC = () => {
   const [messages, setMessages] = useState<Email[]>([]);
   const [mailBoxDetails, setMailBox] = useState<Email[]>([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchEmails;
-  }, []);
 
   useEffect(() => {
     const getEmails = async () => {
@@ -26,23 +22,24 @@ const Sync: React.FC = () => {
       };
       const response = await fetchEmails(headers);
       if (response?.error) {
-        alert(response?.error);
-        localStorage.removeItem("token");
-        navigate("/");
+        alert(response?.error?.message);
+        if (response?.error?.code == 401) {
+          localStorage.removeItem("token");
+          navigate("/");
+        }
       }
-      setMessages(response?.messages);
-      setMailBox(response?.mailBoxDetails);
+      if (response?.messages) {
+        setMessages(response?.messages);
+      }
+      if (response?.mailBoxDetails) {
+        setMailBox(response?.mailBoxDetails);
+      }
     };
 
     getEmails();
   }, []);
 
-  return (
-    <div>
-      <h1>Synchronized Emails</h1>
-      <ul></ul>
-    </div>
-  );
+  return <CustomDrawer />;
 };
 
-export default Sync;
+export default EmailList;

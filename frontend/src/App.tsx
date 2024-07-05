@@ -1,8 +1,8 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import AddAccount from "./components/AddAccount";
-import EmailList from "./components/EmailList";
-import SyncStatus from "./components/SyncStatus";
+import AddAccount from "./pages/AddAccount";
+import EmailList from "./pages/EmailList";
+import SyncStatus from "./pages/SyncStatus";
 
 const App: React.FC = () => {
   return (

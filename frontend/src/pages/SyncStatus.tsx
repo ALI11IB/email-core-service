@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { checkSyncStatus } from "../services/api";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const SyncStatus: React.FC = () => {
-  const { token } = useParams<{ token: string }>();
+  const useQuery = () => {
+    return new URLSearchParams(useLocation().search);
+  };
   const navigate = useNavigate();
+  const query = useQuery();
 
   useEffect(() => {
+    const token = query.get("token");
     if (token) {
       localStorage.setItem("token", token);
       navigate("/emails");
@@ -14,7 +18,7 @@ const SyncStatus: React.FC = () => {
       alert("Sync failed, try again please");
       navigate("/");
     }
-  }, [token]);
+  }, [query]);
 
   return (
     <div

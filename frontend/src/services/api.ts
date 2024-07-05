@@ -23,9 +23,19 @@ export const fetchEmails = async (headers: any): Promise<any> => {
     };
   } catch (error: any) {
     if (error?.response && error?.response?.status === 401) {
-      return { error: "Unauthorized - Token may be invalid or expired" };
+      return {
+        error: {
+          code: error?.response?.status,
+          message: "Unauthorized - Token may be invalid or expired",
+        },
+      };
     } else {
-      return { error: "Error fetching data:" };
+      return {
+        error: {
+          code: error?.response?.status,
+          message: "Error fetching data:",
+        },
+      };
     }
   }
 };
