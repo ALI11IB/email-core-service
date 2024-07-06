@@ -5,4 +5,6 @@ export interface IEmailProvider {
   handleCallback(code: string): Promise<User>;
   fetchEmails(accessToken: string): Promise<any[]>;
   fetchMailboxDetails(accessToken: string): Promise<any[]>;
+  createSubscription(accessToken: string): Promise<any>;
+  fetchNewEmail(messageId: string): Promise<any>;
 }

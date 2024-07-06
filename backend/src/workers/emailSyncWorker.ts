@@ -1,5 +1,6 @@
 import { connectToRabbitMQ, getChannel } from '../config/rabbitmq';
 import { User } from '../models';
+import { createSubscription } from '../services/authService';
 import { syncUserData } from '../services/syncService';
 
 export const consumeMessages = async () => {
@@ -24,6 +25,8 @@ export const consumeMessages = async () => {
         try {
           await syncUserData(user, provider);
           console.log('Email sync completed for user:', user.email);
+
+          await createSubscription(provider, user.accessToken);
         } catch (error) {
           console.error('Error syncing email for user:', user.email, error);
         }

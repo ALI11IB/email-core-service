@@ -89,10 +89,6 @@ const NavBar: React.FC<Props> = ({ open, setOpen }) => {
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
   return (
     <AppBar position="fixed" open={open}>
       <Toolbar>

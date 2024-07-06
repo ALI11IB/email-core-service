@@ -7,6 +7,7 @@ export class GmailProvider implements IEmailProvider {
   private clientId = process.env.GMAIL_CLIENT_ID!;
   private clientSecret = process.env.GMAIL_CLIENT_SECRET!;
   private redirectUri = process.env.CALLBACK_URL!;
+  private webhookUrl = process.env.WEBHOOK_URL!;
 
   getAuthUrl(): string {
     const params = new URLSearchParams({
@@ -65,5 +66,24 @@ export class GmailProvider implements IEmailProvider {
       folderId: folder.id,
     }));
     return response.data.value;
+  }
+
+  async createSubscription(accessToken: string): Promise<any> {
+    const token = accessToken;
+
+    try {
+    } catch (error) {
+      console.error('Error creating subscription:', error);
+    }
+  }
+
+  async fetchNewEmail(messageId: string): Promise<any> {
+    // const token = 'YOUR_ACCESS_TOKEN'; // Get this from the OAuth flow
+    // const response = await axios.get(`https://graph.microsoft.com/v1.0/me/messages/${messageId}`, {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // });
+    // return response.data;
   }
 }

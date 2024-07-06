@@ -10,9 +10,7 @@ export const getUser = async (id: string): Promise<User | null> => {
     });
     return res._source as User;
   } catch (error: any) {
-    console.log('==============error======================');
-    console.log(error);
-    console.log('===================error=================');
+    console.log('error getting user', error);
     // if (error.meta.statusCode === 404) {
     //   return null;
     // }
@@ -51,6 +49,6 @@ export const updateUser = async (data: User): Promise<void> => {
     });
     await client.indices.refresh({ index: 'users' });
   } catch (err) {
-    console.error('Error indexing data:', err);
+    console.error('Error updating user:', err);
   }
 };

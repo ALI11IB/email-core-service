@@ -7,6 +7,7 @@ export class OutlookProvider implements IEmailProvider {
   private clientId = process.env.OUTLOOK_CLIENT_ID!;
   private clientSecret = process.env.OUTLOOK_CLIENT_SECRET!;
   private redirectUri = process.env.CALLBACK_URL!;
+  private webhookUrl = process.env.NGROK_URL + process.env.WEBHOOK_URL!;
 
   getAuthUrl(): string {
     const params = new URLSearchParams({
@@ -51,9 +52,6 @@ export class OutlookProvider implements IEmailProvider {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log('================fetchEmails====================');
-    console.log(response.data.value);
-    console.log('================fetchEmails====================');
     return response.data.value;
   }
 
@@ -64,9 +62,41 @@ export class OutlookProvider implements IEmailProvider {
       },
     });
 
-    console.log('==============fetchMailboxDetails======================');
-    console.log(response.data.value);
-    console.log('================fetchMailboxDetails====================');
     return response.data.value;
+  }
+
+  async createSubscription(accessToken: string): Promise<any> {
+    const token = accessToken;
+    const subscription = {
+      changeType: 'created',
+      notificationUrl: this.webhookUrl,
+      resource: 'me/mailFolders/inbox/messages',
+      expirationDateTime: new Date(Date.now() + 3600000).toISOString(), // Set expiration for one hour from now
+      clientState: 'secretClientValue', // Optional, for validation purposes
+    };
+
+    try {
+      const response = await axios.post('https://graph.microsoft.com/v1.0/subscriptions', subscription, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Subscription created:', response.data);
+    } catch (error: any) {
+      console.error('Error creating subscription:', error?.response?.data?.error);
+    }
+  }
+
+  async fetchNewEmail(messageId: string): Promise<any> {
+    const token = 'YOUR_ACCESS_TOKEN'; // Get this from the OAuth flow
+    const response = await axios.get(`https://graph.microsoft.com/v1.0/me/messages/${messageId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
   }
 }

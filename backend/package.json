@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "nodemon src/index.ts"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.14.0",

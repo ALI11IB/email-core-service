@@ -16,9 +16,6 @@ export const addMessage = async (userEmail: string, emails: Array<EmailMessage>)
         index: 'email_messages',
         id: id,
       });
-      console.log('=============exists=======================');
-      console.log(exists);
-      console.log('===============exists=====================');
       if (!exists) {
         // If the message does not exist, add it to the bulk operations
         bulkOps.push({
@@ -47,9 +44,6 @@ export const addMessage = async (userEmail: string, emails: Array<EmailMessage>)
       const response = await client.bulk({ refresh: true, body: bulkOps });
 
       if (response.errors) {
-        console.log('===============response=====================');
-        console.log(response);
-        console.log('================response====================');
         let erroredDocuments: any = [];
         response.items.forEach((action: any, i: number) => {
           const operation = Object.keys(action)[0];
@@ -87,17 +81,11 @@ export const getMessages = async (userEmail: string): Promise<any> => {
       },
     });
 
-    // Extract the messages from the response
-    console.log('==============res email_messages======================');
-    console.log(res);
-    console.log('===================res=================');
     const messages = res.hits.hits.map((hit: any) => hit._source);
 
     return messages;
   } catch (error: any) {
-    console.log('==============error email_messages======================');
-    console.log(error);
-    console.log('===================error=================');
+    console.log('error getting messages:', error);
 
     return null;
   }
@@ -164,9 +152,7 @@ export const getMailBoxDetails = async (email: string): Promise<any> => {
     });
     return res._source;
   } catch (error: any) {
-    console.log('==============error mailbox_details======================');
-    console.log(error);
-    console.log('===================error=================');
+    console.log('error getting mail box details', error);
 
     return null;
   }
