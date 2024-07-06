@@ -27,8 +27,8 @@ export const addMessage = async (userEmail: string, emails: Array<EmailMessage>)
         bulkOps.push({
           userEmail: userEmail,
           id: data?.id,
-          sender: data?.sender?.emailAddress?.address,
-          from: data?.from?.emailAddress?.address,
+          sender: data?.sender,
+          from: data?.from,
           createdDateTime: data?.createdDateTime,
           receivedDateTime: data?.receivedDateTime,
           sentDateTime: data?.sentDateTime,

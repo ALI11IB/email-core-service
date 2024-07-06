@@ -4,8 +4,8 @@ const indicesConfig = {
       properties: {
         userEmail: { type: 'keyword' },
         id: { type: 'keyword' },
-        sender: { type: 'keyword' },
-        from: { type: 'keyword' },
+        sender: { type: 'object' },
+        from: { type: 'object' },
         createdDateTime: { type: 'date' },
         receivedDateTime: { type: 'date' },
         sentDateTime: { type: 'date' },
