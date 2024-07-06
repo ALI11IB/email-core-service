@@ -57,6 +57,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function CustomDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const [selectedMail, setSelectedMail] = React.useState<
+    EmailMessage | undefined
+  >(undefined);
   const {
     mailBoxDetails: { mailboxes },
     setSelectedMailBox,
@@ -64,11 +67,6 @@ export default function CustomDrawer() {
     messages,
   } = useContext<any>(EmailsContext);
 
-  useEffect(() => {
-    console.log("====================================");
-    console.log(mailboxes);
-    console.log("====================================");
-  }, [mailboxes]);
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -89,11 +87,7 @@ export default function CustomDrawer() {
       >
         <DrawerHeader>
           <IconButton onClick={() => setOpen(false)}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
+            <ChevronLeftIcon />
           </IconButton>
         </DrawerHeader>
         <Divider />
@@ -101,7 +95,7 @@ export default function CustomDrawer() {
           {mailboxes &&
             mailboxes?.length &&
             mailboxes.map((box: MailBox, index: number) => (
-              <ListItem key={box?.displayName} disablePadding>
+              <ListItem key={index} disablePadding>
                 <ListItemButton onClick={() => setSelectedMailBox(box.id)}>
                   <ListItemIcon>
                     {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -115,11 +109,28 @@ export default function CustomDrawer() {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        {messages.length &&
-          messages.map((message: EmailMessage) => {
+
+        {selectedMail ? (
+          <>
+            <IconButton onClick={() => setSelectedMail(undefined)}>
+              <ChevronLeftIcon />
+            </IconButton>
+            {/* <Typography paragraph>{selectedMail.bodyPreview}</Typography> */}
+            <Box
+              sx={{
+                border: "1px solid #e0e0e0",
+                borderRadius: "4px",
+                padding: "8px",
+              }}
+              dangerouslySetInnerHTML={{ __html: selectedMail.body?.content }}
+            />
+          </>
+        ) : (
+          messages.length &&
+          messages.map((message: EmailMessage, index: number) => {
             if (message.parentFolderId == selectedMailBox) {
               return (
-                <StyledBox>
+                <StyledBox key={index} onClick={() => setSelectedMail(message)}>
                   <Typography width={"30%"}>
                     {message.from.emailAddress.name}
                   </Typography>
@@ -130,22 +141,8 @@ export default function CustomDrawer() {
                 </StyledBox>
               );
             }
-          })}
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-          dolor purus non enim praesent elementum facilisis leo vel. Risus at
-          ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum
-          quisque non tellus. Convallis convallis tellus id interdum velit
-          laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed
-          adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-          integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-          eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-          quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-          vivamus at augue. At augue eget arcu dictum varius duis at consectetur
-          lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
-          faucibus et molestie ac.
-        </Typography>
+          })
+        )}
       </Main>
     </Box>
   );
