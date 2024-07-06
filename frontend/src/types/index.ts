@@ -8,8 +8,8 @@ export interface User {
 export interface EmailMessage {
   userEmail: string;
   id: string;
-  sender: any;
-  from: any;
+  sender: Sender;
+  from: Sender;
   createdDateTime: string;
   receivedDateTime: string;
   sentDateTime: string;
@@ -36,4 +36,10 @@ export interface MailBox {
   totalItemCount: string;
   sizeInBytes: string;
   isHidden: string;
+}
+export interface Sender {
+  emailAddress: {
+    name: string;
+    address: string;
+  };
 }

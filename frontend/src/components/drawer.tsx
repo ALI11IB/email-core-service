@@ -21,7 +21,9 @@ import MailIcon from "@mui/icons-material/Mail";
 import NavBar from "./navbar";
 import { useContext, useEffect } from "react";
 import { EmailsContext } from "../context";
-import { MailBox } from "../types";
+import { EmailMessage, MailBox } from "../types";
+import { StyledBox } from "./customBox";
+import { getDayAndMonth } from "../helpers";
 
 const drawerWidth = 240;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -57,6 +59,9 @@ export default function CustomDrawer() {
   const [open, setOpen] = React.useState(true);
   const {
     mailBoxDetails: { mailboxes },
+    setSelectedMailBox,
+    selectedMailBox,
+    messages,
   } = useContext<any>(EmailsContext);
 
   useEffect(() => {
@@ -97,7 +102,7 @@ export default function CustomDrawer() {
             mailboxes?.length &&
             mailboxes.map((box: MailBox, index: number) => (
               <ListItem key={box?.displayName} disablePadding>
-                <ListItemButton>
+                <ListItemButton onClick={() => setSelectedMailBox(box.id)}>
                   <ListItemIcon>
                     {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                   </ListItemIcon>
@@ -110,6 +115,22 @@ export default function CustomDrawer() {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
+        {messages.length &&
+          messages.map((message: EmailMessage) => {
+            if (message.parentFolderId == selectedMailBox) {
+              return (
+                <StyledBox>
+                  <Typography width={"30%"}>
+                    {message.from.emailAddress.name}
+                  </Typography>
+                  <Typography width={"60%"}>{message.subject}</Typography>
+                  <Typography width={"10%"}>
+                    {getDayAndMonth(message.receivedDateTime)}
+                  </Typography>
+                </StyledBox>
+              );
+            }
+          })}
         <Typography paragraph>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
@@ -124,20 +145,6 @@ export default function CustomDrawer() {
           vivamus at augue. At augue eget arcu dictum varius duis at consectetur
           lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
           faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-          ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-          elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse
-          sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat
-          mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis
-          risus sed vulputate odio. Morbi tincidunt ornare massa eget egestas
-          purus viverra accumsan in. In hendrerit gravida rutrum quisque non
-          tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant
-          morbi tristique senectus et. Adipiscing elit duis tristique
-          sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
         </Typography>
       </Main>
     </Box>
