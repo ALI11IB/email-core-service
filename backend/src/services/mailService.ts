@@ -144,13 +144,21 @@ export async function addMailBoxDetails(data: MailBoxDetails) {
   }
 }
 
-export const getMailBoxDetails = async (email: string): Promise<any> => {
+export const getMailBoxDetails = async (userEmail: string): Promise<any> => {
   try {
-    const res = await client.get({
+    const res: any = await client.search({
       index: 'mailbox_details',
-      id: email,
+      body: {
+        query: {
+          match: {
+            userEmail: userEmail,
+          },
+        },
+      },
     });
-    return res._source;
+    if (res.hits.hits.length > 0) {
+      return res.hits.hits[0]._source;
+    } else return null;
   } catch (error: any) {
     console.log('error getting mail box details', error);
 

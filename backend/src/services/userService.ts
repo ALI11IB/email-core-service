@@ -2,13 +2,22 @@ import client from '../config/elasticsearch';
 import { indexUser } from '../config/indexData';
 import { User } from '../models';
 
-export const getUser = async (id: string): Promise<User | null> => {
+export const getUser = async (userId: string): Promise<User | null> => {
   try {
-    const res = await client.get({
+    const res = await client.search({
       index: 'users',
-      id,
+      body: {
+        query: {
+          match: {
+            id: userId,
+          },
+        },
+      },
     });
-    return res._source as User;
+
+    if (res.hits.hits.length > 0) {
+      return res.hits.hits[0]._source as User;
+    } else return null;
   } catch (error: any) {
     console.log('error getting user', error);
     // if (error.meta.statusCode === 404) {
@@ -29,7 +38,7 @@ export async function getUserByEmail(email: string): Promise<any> {
       },
     });
 
-    if (res?.hits?.total) {
+    if (res.hits.hits.length > 0) {
       return res.hits.hits[0]._source;
     } else {
       return null;

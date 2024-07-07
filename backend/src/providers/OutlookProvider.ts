@@ -7,7 +7,7 @@ export class OutlookProvider implements IEmailProvider {
   private clientId = process.env.OUTLOOK_CLIENT_ID!;
   private clientSecret = process.env.OUTLOOK_CLIENT_SECRET!;
   private redirectUri = process.env.CALLBACK_URL!;
-  private webhookUrl = process.env.NGROK_URL + process.env.WEBHOOK_URL!;
+  private webhookUrl = process.env.WEBHOOK_URL!;
 
   getAuthUrl(): string {
     const params = new URLSearchParams({

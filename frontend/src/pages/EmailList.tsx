@@ -51,25 +51,3 @@ const EmailList: React.FC = () => {
 };
 
 export default EmailList;
-
-// import { useEffect } from 'react';
-// import io from 'socket.io-client';
-
-// const socket = io('http://localhost:3000');
-
-// const EmailComponent = () => {
-//   useEffect(() => {
-//     socket.on('newEmail', (email) => {
-//       console.log('New email received:', email);
-//       // Update your state or UI to display the new email
-//     });
-
-//     return () => {
-//       socket.off('newEmail');
-//     };
-//   }, []);
-
-//   return <div>{/* Your email display logic */}</div>;
-// };
-
-// export default EmailComponent;
