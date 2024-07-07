@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 import CustomDrawer from "../components/drawer";
 import { EmailsContext, EmailsProvider } from "../context";
 import { fetchEmails } from "../services/api";
+import io from "socket.io-client";
 
 const EmailList: React.FC = () => {
   const navigate = useNavigate();
   const context = useContext<any>(EmailsContext);
+
+  const socket = io("http://localhost:3000");
 
   useEffect(() => {
     const getEmails = async () => {
@@ -34,7 +37,39 @@ const EmailList: React.FC = () => {
     getEmails();
   }, []);
 
+  useEffect(() => {
+    socket.on("newEmail", (newEmail) => {
+      context?.setMessages([...context.messages, newEmail]);
+    });
+
+    return () => {
+      socket.off("newEmail");
+    };
+  }, []);
+
   return <CustomDrawer />;
 };
 
 export default EmailList;
+
+// import { useEffect } from 'react';
+// import io from 'socket.io-client';
+
+// const socket = io('http://localhost:3000');
+
+// const EmailComponent = () => {
+//   useEffect(() => {
+//     socket.on('newEmail', (email) => {
+//       console.log('New email received:', email);
+//       // Update your state or UI to display the new email
+//     });
+
+//     return () => {
+//       socket.off('newEmail');
+//     };
+//   }, []);
+
+//   return <div>{/* Your email display logic */}</div>;
+// };
+
+// export default EmailComponent;

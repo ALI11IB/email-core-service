@@ -71,8 +71,8 @@ export class OutlookProvider implements IEmailProvider {
       changeType: 'created',
       notificationUrl: this.webhookUrl,
       resource: 'me/mailFolders/inbox/messages',
-      expirationDateTime: new Date(Date.now() + 3600000).toISOString(), // Set expiration for one hour from now
-      clientState: 'secretClientValue', // Optional, for validation purposes
+      expirationDateTime: new Date(Date.now() + 3600000).toISOString(),
+      clientState: 'secretClientValue',
     };
 
     try {
@@ -89,11 +89,10 @@ export class OutlookProvider implements IEmailProvider {
     }
   }
 
-  async fetchNewEmail(messageId: string): Promise<any> {
-    const token = 'YOUR_ACCESS_TOKEN'; // Get this from the OAuth flow
+  async fetchNewEmail(accessToken: string, messageId: string): Promise<any> {
     const response = await axios.get(`https://graph.microsoft.com/v1.0/me/messages/${messageId}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 

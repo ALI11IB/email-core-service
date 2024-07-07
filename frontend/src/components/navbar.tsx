@@ -15,6 +15,8 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import io from "socket.io-client";
+import { useState } from "react";
 
 const drawerWidth = 240;
 
@@ -85,9 +87,14 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const NavBar: React.FC<Props> = ({ open, setOpen }) => {
+  const [notification, setNotifications] = useState<number>(0);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
+  const socket = io("http://localhost:3000");
+  socket.on("newEmail", (newEmail) => {
+    setNotifications((prev) => prev + 1);
+  });
 
   return (
     <AppBar position="fixed" open={open}>
@@ -107,7 +114,7 @@ const NavBar: React.FC<Props> = ({ open, setOpen }) => {
           component="div"
           sx={{ display: { xs: "none", sm: "block" } }}
         >
-          MUI
+          Email Service
         </Typography>
         <Search>
           <SearchIconWrapper>
@@ -133,8 +140,9 @@ const NavBar: React.FC<Props> = ({ open, setOpen }) => {
             size="large"
             aria-label="show 17 new notifications"
             color="inherit"
+            onClick={() => setNotifications(0)}
           >
-            <Badge badgeContent={17} color="error">
+            <Badge badgeContent={notification} color="error">
               <NotificationsIcon />
             </Badge>
           </IconButton>

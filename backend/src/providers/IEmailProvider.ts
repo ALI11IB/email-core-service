@@ -6,5 +6,5 @@ export interface IEmailProvider {
   fetchEmails(accessToken: string): Promise<any[]>;
   fetchMailboxDetails(accessToken: string): Promise<any[]>;
   createSubscription(accessToken: string): Promise<any>;
-  fetchNewEmail(messageId: string): Promise<any>;
+  fetchNewEmail(accessToken: string, messageId: string): Promise<any>;
 }

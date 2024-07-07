@@ -14,3 +14,8 @@ export const createSubscription = async (provider: string, accessToken: string) 
   const emailProvider = ProviderFactory.getProvider(provider);
   return await emailProvider.createSubscription(accessToken);
 };
+
+export const fetchNewEmail = async (provider: string, accessToken: string, messageId: string) => {
+  const emailProvider = ProviderFactory.getProvider(provider);
+  return await emailProvider.fetchNewEmail(accessToken, messageId);
+};

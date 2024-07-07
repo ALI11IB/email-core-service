@@ -77,7 +77,7 @@ export class GmailProvider implements IEmailProvider {
     }
   }
 
-  async fetchNewEmail(messageId: string): Promise<any> {
+  async fetchNewEmail(accessToken: string, messageId: string): Promise<any> {
     // const token = 'YOUR_ACCESS_TOKEN'; // Get this from the OAuth flow
     // const response = await axios.get(`https://graph.microsoft.com/v1.0/me/messages/${messageId}`, {
     //   headers: {

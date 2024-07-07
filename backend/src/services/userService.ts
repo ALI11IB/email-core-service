@@ -18,6 +18,28 @@ export const getUser = async (id: string): Promise<User | null> => {
   }
 };
 
+export async function getUserByEmail(email: string): Promise<any> {
+  try {
+    const res = await client.search({
+      index: 'users',
+      body: {
+        query: {
+          match: { email },
+        },
+      },
+    });
+
+    if (res?.hits?.total) {
+      return res.hits.hits[0]._source;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching user by email:', error);
+    throw error;
+  }
+}
+
 export const addUser = async (data: User): Promise<void> => {
   try {
     await client.index({
