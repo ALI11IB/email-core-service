@@ -1,3 +1,4 @@
+import { io } from '..';
 import { connectToRabbitMQ, getChannel } from '../config/rabbitmq';
 import { User } from '../models';
 import { createSubscription } from '../services/authService';
@@ -27,6 +28,7 @@ export const consumeMessages = async () => {
           console.log('Email sync completed for user:', user.email);
 
           await createSubscription(provider, user.accessToken);
+          io.emit('synced');
         } catch (error) {
           console.error('Error syncing email for user:', user.email, error);
         }

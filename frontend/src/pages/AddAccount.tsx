@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 const AddAccount: React.FC = () => {
-  const [provider, setProvider] = useState<string>("outlook");
+  const [provider, setProvider] = useState<string>("");
   const [authUrl, setAuthUrl] = useState<string>("");
 
   const handleAddAccount = async () => {
@@ -38,13 +38,15 @@ const AddAccount: React.FC = () => {
           onChange={(e) => setProvider(e.target.value)}
         >
           <MenuItem value="">
-            <em>None</em>
+            <em></em>
           </MenuItem>
           <MenuItem value={"outlook"}>Outlook</MenuItem>
-          <MenuItem value={"gmail"}>Gmail</MenuItem>
+          {/* <MenuItem value={"gmail"}>Gmail</MenuItem> */}
         </Select>
       </FormControl>
-      <Button onClick={handleAddAccount}>Link Email Account</Button>
+      <Button disabled={!provider?.length} onClick={handleAddAccount}>
+        Link Email Account
+      </Button>
     </Box>
   );
 };

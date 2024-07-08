@@ -4,6 +4,14 @@ import AddAccount from "./pages/AddAccount";
 import EmailList from "./pages/EmailList";
 import SyncStatus from "./pages/SyncStatus";
 import { EmailsProvider } from "./context";
+import { io } from "socket.io-client";
+
+export const socket = io("/", {
+  withCredentials: true,
+  extraHeaders: {
+    "email-socket": "abcd",
+  },
+});
 
 const App: React.FC = () => {
   return (

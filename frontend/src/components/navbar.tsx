@@ -14,6 +14,7 @@ import * as React from "react";
 import { useContext, useState } from "react";
 import { EmailsContext } from "../context";
 import { fetchEmails } from "../services/api";
+import { socket } from "../App";
 
 const drawerWidth = 240;
 
@@ -91,15 +92,9 @@ const NavBar: React.FC<Props> = ({ open, setOpen }) => {
     setOpen(true);
   };
 
-  // const socket = io("/", {
-  //   withCredentials: true,
-  //   extraHeaders: {
-  //     "email-socket": "abcd",
-  //   },
-  // });
-  // socket.on("newEmail", (newEmail) => {
-  //   setNotifications((prev) => prev + 1);
-  // });
+  socket.on("newEmail", (newEmail) => {
+    setNotifications((prev) => prev + 1);
+  });
 
   const handleKeyDown = async (event: any) => {
     if (event.key === "Enter") {
