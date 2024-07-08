@@ -1,37 +1,71 @@
 version: "3.8"
 
 services:
-  # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
-  #   ports:
-  #     - "9200:9200"
-  #     - "9300:9300"
-  #   environment:
-  #     - discovery.type=single-node
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=2MHM4pYcU167v_qYL6kx
+      - xpack.security.enabled=true
+      - ES_JAVA_OPTS=-Xmx2g -Xms2g
 
-  # rabbitmq:
-  #   image: rabbitmq:3.13-management
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   backend:
     build:
       context: ./backend
     ports:
       - "3000:3000"
-    # depends_on:
-    # - elasticsearch
-    # - rabbitmq
-    # environment:
-    # - ELASTICSEARCH_HOST=http://elasticsearch:9200
-    # - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - elasticsearch
+      - rabbitmq
+    environment:
+      - PORT=3000
+      - OUTLOOK_CLIENT_ID=b1308bb2-c592-48f9-9a7a-05e46dd1bc33
+      - OUTLOOK_CLIENT_SECRET=L3s8Q~ME3rjtbXV5X9iF2z-us~hbwFI9qEOG~b_E
+      - CALLBACK_URL=http://localhost:3000/auth/callback
+      - WEBHOOK_URL=http://localhost:3000/auth/webhook
+      - ELASTICSEARCH_NODE=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=2MHM4pYcU167v_qYL6kx
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - JWT_SECRET_KEY=email-core-service-key101
+      - FE_REDIRECT_URL=http://localhost:8080
+    command:
+      [
+        "./wait-for-it.sh",
+        "elasticsearch:9200",
+        "--",
+        "./wait-for-it.sh",
+        "rabbitmq:5672",
+        "--",
+        "npm",
+        "start",
+      ]
+    # entrypoint: ["./wait-for-it.sh", "rabbitmq:5672", "--", "npm", "start"]
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "8080:8080"
     depends_on:
       - backend
+
+volumes:
+  esdata:

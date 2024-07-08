@@ -1,17 +1,11 @@
-# Use the official Node.js 20
-FROM node:20
-
-# Set the working directory
+FROM node:20 as build-stage
 WORKDIR /app
-
-# Install app dependencies
 COPY package*.json ./
 RUN npm install
-
-# Copy the rest of the application code
 COPY . .
-
-# Build the React app
 RUN npm run build
-
- 
+FROM nginx:alpine
+COPY --from=build-stage /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]
