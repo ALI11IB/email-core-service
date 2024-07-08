@@ -1,21 +1,18 @@
-# Use the official Node.js 16 image.
-FROM node:16
+# Use the official Node.js image
+FROM node:20
 
-# Set the working directory
-WORKDIR /usr/src/app
+# Create and change to the app directory
+WORKDIR /app
 
 # Install app dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install -g ts-node typescript
 
 # Copy the rest of the application code
 COPY . .
 
-# Build the TypeScript code
-RUN npm run build
-
-# Expose the application port
+# Expose the port the app runs on
 EXPOSE 3000
 
-# Run the application
-CMD ["npm", "start"]
+# Start the Node.js server
+CMD ["ts-node", "src/index.ts"]
