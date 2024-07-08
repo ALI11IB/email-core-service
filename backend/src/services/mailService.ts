@@ -1,6 +1,5 @@
 import client from '../config/elasticsearch';
-import { indexUser } from '../config/indexData';
-import { EmailMessage, MailBoxDetails, User } from '../models';
+import { EmailMessage, MailBoxDetails } from '../models';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,7 +16,6 @@ export const addMessage = async (userEmail: string, emails: Array<EmailMessage>)
         id: id,
       });
       if (!exists) {
-        // If the message does not exist, add it to the bulk operations
         bulkOps.push({
           index: { _index: 'email_messages', _id: id },
         });
@@ -96,11 +94,10 @@ export async function addMailBoxDetails(data: MailBoxDetails) {
     // Check if the mailbox details already exist for the user
     const exists = await client.exists({
       index: 'mailbox_details',
-      id: data.userEmail, // Use userEmail as the unique identifier
+      id: data.userEmail,
     });
 
     if (exists) {
-      // Fetch existing mailbox details
       const existingData: any = await client.get({
         index: 'mailbox_details',
         id: data.userEmail,
@@ -108,7 +105,6 @@ export async function addMailBoxDetails(data: MailBoxDetails) {
 
       const existingMailboxes = existingData?._source.mailboxes;
 
-      // Check for changes
       if (JSON.stringify(existingMailboxes) !== JSON.stringify(data.mailboxes)) {
         // Update the mailbox details if they have changed
         await client.update({
@@ -125,10 +121,9 @@ export async function addMailBoxDetails(data: MailBoxDetails) {
         console.log('Mailbox details are up to date');
       }
     } else {
-      // Index new mailbox details
       await client.index({
         index: 'mailbox_details',
-        id: data.userEmail, // Use userEmail as the unique identifier
+        id: data.userEmail,
         body: {
           userEmail: data.userEmail,
           mailboxes: data.mailboxes,
@@ -136,8 +131,6 @@ export async function addMailBoxDetails(data: MailBoxDetails) {
       });
       console.log('Mailbox details indexed');
     }
-
-    // Refresh the index to make sure the document is immediately available for search
     await client.indices.refresh({ index: 'mailbox_details' });
   } catch (err) {
     console.error('Error indexing data:', err);
@@ -168,7 +161,6 @@ export const getMailBoxDetails = async (userEmail: string): Promise<any> => {
 
 export async function searcMailBoxDetails(email?: string) {
   try {
-    // Search for email messages for a specific user
     const mailBoxDetails: any = await client.search({
       index: 'mailbox_details',
       body: {
@@ -186,7 +178,6 @@ export async function searcMailBoxDetails(email?: string) {
 
 export async function searchMessages(email?: string) {
   try {
-    // Search for email messages for a specific user
     const emailMessages: any = await client.search({
       index: 'email_messages',
       body: {

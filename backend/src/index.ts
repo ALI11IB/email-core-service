@@ -26,11 +26,11 @@ export const io = new Server(server, {
 });
 
 // Serve the static files from the React app
-// app.use(express.static(path.join(__dirname, 'path/to/react-app/build')));
+app.use(express.static(path.join(__dirname, 'path/to/react-app/build')));
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'path/to/react-app/build', 'index.html'));
-// });
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'path/to/react-app/build', 'index.html'));
+});
 
 // Handle WebSocket connections
 io.on('connection', (socket) => {

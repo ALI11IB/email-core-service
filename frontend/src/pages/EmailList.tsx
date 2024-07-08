@@ -1,15 +1,14 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomDrawer from "../components/drawer";
-import { EmailsContext, EmailsProvider } from "../context";
-import { fetchEmails } from "../services/api";
 import io from "socket.io-client";
+import CustomDrawer from "../components/drawer";
+import { EmailsContext } from "../context";
+import { fetchEmails } from "../services/api";
 
 const EmailList: React.FC = () => {
   const navigate = useNavigate();
   const context = useContext<any>(EmailsContext);
 
-  // const socket = io("http://localhost:3000");
   const socket = io("http://localhost:3000", {
     withCredentials: true,
     extraHeaders: {
@@ -19,7 +18,7 @@ const EmailList: React.FC = () => {
 
   useEffect(() => {
     const getEmails = async () => {
-      const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+      const token = localStorage.getItem("token");
       const headers = {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

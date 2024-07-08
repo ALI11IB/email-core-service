@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-// import { createUserController, getUserController } from './controllers/userController';
 import { getAuthUrlController, authCallbackController, webHookController } from './controllers/authController';
 import { getEmailsController } from './controllers/emailController';
 

@@ -11,7 +11,7 @@ export const consumeMessages = async () => {
 
   await channel.assertQueue(queue, { durable: true });
 
-  console.log('Waiting for messages in %s. To exit press CTRL+C', queue);
+  console.log('Waiting for messages...');
 
   channel.consume(
     queue,

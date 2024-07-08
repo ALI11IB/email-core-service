@@ -14,6 +14,6 @@ export const StyledBox = styled(Box)(({ theme }) => ({
   cursor: "pointer",
   "&:hover": {
     border: "1px solid #f2f6fc",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)", // Custom shadow
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
   },
 }));

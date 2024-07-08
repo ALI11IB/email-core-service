@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import { fetchNewEmail, getAuthUrl, handleCallback } from '../services/authService';
-import { addUser, getUser, getUserByEmail, updateUser } from '../services/userService';
-import { connectToRabbitMQ, getChannel } from '../config/rabbitmq';
-import jwt from 'jsonwebtoken';
-import { generateToken } from '../utils';
-import { addMessage } from '../services/mailService';
 import { io } from '..';
+import { connectToRabbitMQ, getChannel } from '../config/rabbitmq';
+import { fetchNewEmail, getAuthUrl, handleCallback } from '../services/authService';
+import { addMessage } from '../services/mailService';
+import { addUser, getUser, getUserByEmail, updateUser } from '../services/userService';
+import { generateToken } from '../utils';
 
 export const getAuthUrlController = (req: Request, res: Response) => {
   const provider = req.query.provider as string;
@@ -24,7 +23,7 @@ export const authCallbackController = async (req: Request, res: Response) => {
       // Add new user if not exists
       await addUser(user);
     } else {
-      // Update existing user (e.g., update accessToken)
+      // Update existing user
       await updateUser(user);
     }
 
@@ -40,7 +39,7 @@ export const authCallbackController = async (req: Request, res: Response) => {
 
     console.log('Message sent to RabbitMQ');
     const token = generateToken(user.id);
-    // Redirect to frontend with user information (use a JWT token for production)
+    // Redirect to frontend with user token
     res.redirect(`http://localhost:3001/sync?token=${token}`);
   } catch (error: any) {
     res.status(500).json({ error: error?.message });

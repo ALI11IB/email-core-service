@@ -1,5 +1,4 @@
 import client from '../config/elasticsearch';
-import { indexUser } from '../config/indexData';
 import { User } from '../models';
 
 export const getUser = async (userId: string): Promise<User | null> => {
@@ -20,9 +19,6 @@ export const getUser = async (userId: string): Promise<User | null> => {
     } else return null;
   } catch (error: any) {
     console.log('error getting user', error);
-    // if (error.meta.statusCode === 404) {
-    //   return null;
-    // }
     return null;
   }
 };

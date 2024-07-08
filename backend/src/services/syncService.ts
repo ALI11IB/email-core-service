@@ -1,4 +1,3 @@
-import { indexEmailMessages, indexMailBoxDetails } from '../config/indexData';
 import { User } from '../models';
 import { ProviderFactory } from '../providers/ProviderFactory';
 import { addMailBoxDetails, addMessage } from './mailService';
@@ -15,7 +14,4 @@ export const syncUserData = async (user: User, provider: string): Promise<void> 
     mailboxes,
   });
   await addMessage(userEmail, emails);
-  // for (let email of emails) {
-  //   await addMessage(userEmail, email);
-  // }
 };

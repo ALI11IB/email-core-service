@@ -3,6 +3,7 @@ import axios from 'axios';
 import { User } from '../models';
 import { v4 as uuidv4 } from 'uuid';
 
+// ***************************NOT TESTED************************* //
 export class GmailProvider implements IEmailProvider {
   private clientId = process.env.GMAIL_CLIENT_ID!;
   private clientSecret = process.env.GMAIL_CLIENT_SECRET!;

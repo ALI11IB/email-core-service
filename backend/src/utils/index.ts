@@ -8,7 +8,7 @@ export function generateToken(userId: string) {
   };
 
   const options = {
-    expiresIn: '24h', // Token expires in 1 hour
+    expiresIn: '24h',
   };
 
   const token = jwt.sign(payload, SECRET_KEY, options);
