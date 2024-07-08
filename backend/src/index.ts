@@ -25,14 +25,12 @@ export const io = new Server(server, {
     : {},
 });
 
-// Serve the static files from the React app
-app.use(express.static(path.join(__dirname, '../../frontend/build')));
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'build')));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'build', 'index.html'));
 });
 
-// Handle WebSocket connections
 io.on('connection', (socket) => {
   console.log('New client connected');
 
@@ -43,10 +41,7 @@ io.on('connection', (socket) => {
 
 createIndices()
   .then(async (res) => {
-    // await client.indices.delete({ index: 'email_messages' });
-    // Connect to RabbitMQ on startup
     await connectToRabbitMQ();
-    // Start consuming messages
     consumeMessages();
     server.listen(PORT, async () => {
       console.log(`Server is running on port ${PORT}`);

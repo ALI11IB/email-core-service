@@ -20,14 +20,11 @@ export const authCallbackController = async (req: Request, res: Response) => {
 
     let existingUser = await getUser(user.id);
     if (!existingUser) {
-      // Add new user if not exists
       await addUser(user);
     } else {
-      // Update existing user
       await updateUser(user);
     }
 
-    // Connect to RabbitMQ
     await connectToRabbitMQ();
     const channel = getChannel();
     const queue = 'emailSyncQueue';
@@ -39,8 +36,7 @@ export const authCallbackController = async (req: Request, res: Response) => {
 
     console.log('Message sent to RabbitMQ');
     const token = generateToken(user.id);
-    // Redirect to frontend with user token
-    res.redirect(`http://localhost:3001/sync?token=${token}`);
+    res.redirect(`${process.env.FE_REDIRECT_URL}/sync?token=${token}`);
   } catch (error: any) {
     res.status(500).json({ error: error?.message });
   }
