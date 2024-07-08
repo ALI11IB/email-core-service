@@ -9,7 +9,13 @@ const EmailList: React.FC = () => {
   const navigate = useNavigate();
   const context = useContext<any>(EmailsContext);
 
-  const socket = io("http://localhost:3000");
+  // const socket = io("http://localhost:3000");
+  const socket = io("http://localhost:3000", {
+    withCredentials: true,
+    extraHeaders: {
+      "email-socket": "abcd",
+    },
+  });
 
   useEffect(() => {
     const getEmails = async () => {

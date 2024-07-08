@@ -91,7 +91,12 @@ const NavBar: React.FC<Props> = ({ open, setOpen }) => {
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-  const socket = io("http://localhost:3000");
+  const socket = io("http://localhost:3000", {
+    withCredentials: true,
+    extraHeaders: {
+      "email-socket": "abcd",
+    },
+  });
   socket.on("newEmail", (newEmail) => {
     setNotifications((prev) => prev + 1);
   });
