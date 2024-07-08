@@ -1,26 +1,57 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+const instance = axios.create();
+
+instance.interceptors.request.use(
+  async (config) => {
+    const accesstoken = localStorage.getItem("token");
+
+    if (accesstoken) {
+      config.headers["Authorization"] = `Bearer ${accesstoken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const getAuthUrl = async (provider: string): Promise<string> => {
-  const response = await axios.get(`${API_BASE_URL}/auth/url`, {
+  const response = await instance.get(`/api/auth/url`, {
     params: { provider },
   });
   return response.data.url;
 };
 
-export const checkSyncStatus = async (): Promise<string> => {
-  const response = await axios.get(`${API_BASE_URL}/sync/status`);
-  return response.data.status;
+export const fetchEmails = async (searchQuery: string): Promise<any> => {
+  try {
+    const response = await instance.get(
+      `/api/emails/search?query=${searchQuery}`
+    );
+    return response?.data;
+  } catch (error: any) {
+    if (error?.response && error?.response?.status === 401) {
+      return {
+        error: {
+          code: error?.response?.status,
+          message: "Unauthorized - Token may be invalid or expired",
+        },
+      };
+    } else {
+      return {
+        error: {
+          code: error?.response?.status,
+          message: "Error fetching data:",
+        },
+      };
+    }
+  }
 };
 
-export const fetchEmails = async (headers: any): Promise<any> => {
+export const fetchMailBoxes = async (): Promise<any> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/emails`, { headers });
-    return {
-      messages: response?.data?.messages,
-      mailBoxDetails: response?.data?.mailBoxDetails,
-    };
+    const response = await instance.get(`/api/mailBoxes`);
+    return response?.data;
   } catch (error: any) {
     if (error?.response && error?.response?.status === 401) {
       return {

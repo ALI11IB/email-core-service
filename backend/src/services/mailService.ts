@@ -66,19 +66,48 @@ export const addMessage = async (userEmail: string, emails: Array<EmailMessage>)
   }
 };
 
-export const getMessages = async (userEmail: string): Promise<any> => {
+export const searchMessages = async (userEmail: string, query: any): Promise<any> => {
   try {
-    const res = await client.search({
-      index: 'email_messages',
-      body: {
-        query: {
-          match: {
-            userEmail: userEmail,
+    let esQuery;
+    if (query?.length > 0) {
+      esQuery = {
+        index: 'email_messages',
+        body: {
+          query: {
+            bool: {
+              must: [
+                {
+                  multi_match: {
+                    query: query,
+                    fields: ['subject', 'bodyPreview', 'sender', 'recipient'],
+                  },
+                },
+                {
+                  term: {
+                    userEmail: userEmail,
+                  },
+                },
+              ],
+            },
           },
         },
-      },
-    });
-
+      };
+    } else {
+      console.log('================222222====================');
+      console.log();
+      console.log('====================================');
+      esQuery = {
+        index: 'email_messages',
+        body: {
+          query: {
+            match: {
+              userEmail: userEmail,
+            },
+          },
+        },
+      };
+    }
+    const res = await client.search(esQuery);
     const messages = res.hits.hits.map((hit: any) => hit._source);
 
     return messages;
@@ -91,7 +120,6 @@ export const getMessages = async (userEmail: string): Promise<any> => {
 
 export async function addMailBoxDetails(data: MailBoxDetails) {
   try {
-    // Check if the mailbox details already exist for the user
     const exists = await client.exists({
       index: 'mailbox_details',
       id: data.userEmail,
@@ -171,23 +199,6 @@ export async function searcMailBoxDetails(email?: string) {
     });
     console.log('mailBoxDetails:', mailBoxDetails.hits.hits);
     return mailBoxDetails.hits.hits;
-  } catch (err) {
-    console.error('Error searching data:', err);
-  }
-}
-
-export async function searchMessages(email?: string) {
-  try {
-    const emailMessages: any = await client.search({
-      index: 'email_messages',
-      body: {
-        query: {
-          match: { userEmail: email },
-        },
-      },
-    });
-    console.log('Email messages:', emailMessages);
-    return emailMessages.hits.hits;
   } catch (err) {
     console.error('Error searching data:', err);
   }

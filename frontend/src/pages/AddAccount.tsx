@@ -1,5 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getAuthUrl } from "../services/api";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 
 const AddAccount: React.FC = () => {
   const [provider, setProvider] = useState<string>("outlook");
@@ -12,15 +21,31 @@ const AddAccount: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Add Account</h2>
-      <select value={provider} onChange={(e) => setProvider(e.target.value)}>
-        <option value="outlook">Outlook</option>
-        <option value="gmail">Gmail</option>
-      </select>
-      <button onClick={handleAddAccount}>Link Email Account</button>
-      {authUrl && <a href={authUrl}>Authenticate with {provider}</a>}
-    </div>
+    <Box
+      display={"flex"}
+      flexDirection={"column"}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
+      <Typography variant={"h3"}>Add Account</Typography>
+      <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+        <InputLabel id="demo-select-small-label">Provider</InputLabel>
+        <Select
+          labelId="demo-select-small-label"
+          id="demo-select-small"
+          value={provider}
+          label="Age"
+          onChange={(e) => setProvider(e.target.value)}
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={"outlook"}>Outlook</MenuItem>
+          <MenuItem value={"gmail"}>Gmail</MenuItem>
+        </Select>
+      </FormControl>
+      <Button onClick={handleAddAccount}>Link Email Account</Button>
+    </Box>
   );
 };
 

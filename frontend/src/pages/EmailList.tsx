@@ -3,54 +3,55 @@ import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import CustomDrawer from "../components/drawer";
 import { EmailsContext } from "../context";
-import { fetchEmails } from "../services/api";
+import { fetchEmails, fetchMailBoxes } from "../services/api";
 
 const EmailList: React.FC = () => {
   const navigate = useNavigate();
   const context = useContext<any>(EmailsContext);
 
-  const socket = io("http://localhost:3000", {
-    withCredentials: true,
-    extraHeaders: {
-      "email-socket": "abcd",
-    },
-  });
+  // const socket = io("/", {
+  //   withCredentials: true,
+  //   extraHeaders: {
+  //     "email-socket": "abcd",
+  //   },
+  // });
 
   useEffect(() => {
     const getEmails = async () => {
-      const token = localStorage.getItem("token");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      };
-      const response = await fetchEmails(headers);
+      const response = await fetchEmails("");
+      const response2 = await fetchMailBoxes();
       if (response?.error) {
         alert(response?.error?.message);
         if (response?.error?.code == 401) {
           localStorage.removeItem("token");
           navigate("/");
+          return;
         }
       }
-      if (response?.messages) {
-        context?.setMessages(response?.messages);
+      if (response2?.error) {
+        alert(response2?.error?.message);
+        if (response2?.error?.code == 401) {
+          localStorage.removeItem("token");
+          navigate("/");
+          return;
+        }
       }
-      if (response?.mailBoxDetails) {
-        context?.setMailBox(response?.mailBoxDetails);
-      }
+      context?.setMessages(response);
+      context?.setMailBox(response2);
     };
 
     getEmails();
   }, []);
 
-  useEffect(() => {
-    socket.on("newEmail", (newEmail) => {
-      context?.setMessages([...context.messages, newEmail]);
-    });
+  // useEffect(() => {
+  //   socket.on("newEmail", (newEmail) => {
+  //     context?.setMessages([...context.messages, newEmail]);
+  //   });
 
-    return () => {
-      socket.off("newEmail");
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("newEmail");
+  //   };
+  // }, []);
 
   return <CustomDrawer />;
 };

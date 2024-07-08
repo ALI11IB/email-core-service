@@ -1,7 +1,6 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Badge from "@mui/material/Badge";
@@ -12,8 +11,9 @@ import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { useState } from "react";
-import io from "socket.io-client";
+import { useContext, useState } from "react";
+import { EmailsContext } from "../context";
+import { fetchEmails } from "../services/api";
 
 const drawerWidth = 240;
 
@@ -33,7 +33,7 @@ const Search = styled("div")(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
+const SearchIconWrapper = styled("button")(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: "100%",
   position: "absolute",
@@ -84,18 +84,45 @@ const AppBar = styled(MuiAppBar, {
 
 const NavBar: React.FC<Props> = ({ open, setOpen }) => {
   const [notification, setNotifications] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const context = useContext<any>(EmailsContext);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-  const socket = io("http://localhost:3000", {
-    withCredentials: true,
-    extraHeaders: {
-      "email-socket": "abcd",
-    },
-  });
-  socket.on("newEmail", (newEmail) => {
-    setNotifications((prev) => prev + 1);
-  });
+
+  // const socket = io("/", {
+  //   withCredentials: true,
+  //   extraHeaders: {
+  //     "email-socket": "abcd",
+  //   },
+  // });
+  // socket.on("newEmail", (newEmail) => {
+  //   setNotifications((prev) => prev + 1);
+  // });
+
+  const handleKeyDown = async (event: any) => {
+    if (event.key === "Enter") {
+      try {
+        const response = await fetchEmails(searchQuery);
+        if (response) {
+          context?.setMessages(response);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+  };
+  const handleSearch = async () => {
+    try {
+      const response = await fetchEmails(searchQuery);
+      if (response) {
+        context?.setMessages(response);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   return (
     <AppBar position="fixed" open={open}>
@@ -118,25 +145,19 @@ const NavBar: React.FC<Props> = ({ open, setOpen }) => {
           Email Service
         </Typography>
         <Search>
-          <SearchIconWrapper>
+          <IconButton sx={{ color: "#ffff" }} onClick={handleSearch}>
             <SearchIcon />
-          </SearchIconWrapper>
+          </IconButton>
           <StyledInputBase
             placeholder="Search…"
             inputProps={{ "aria-label": "search" }}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
         </Search>
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: { xs: "none", md: "flex" } }}>
-          <IconButton
-            size="large"
-            aria-label="show 4 new mails"
-            color="inherit"
-          >
-            <Badge badgeContent={4} color="error">
-              <MailIcon />
-            </Badge>
-          </IconButton>
           <IconButton
             size="large"
             aria-label="show 17 new notifications"
@@ -144,7 +165,7 @@ const NavBar: React.FC<Props> = ({ open, setOpen }) => {
             onClick={() => setNotifications(0)}
           >
             <Badge badgeContent={notification} color="error">
-              <NotificationsIcon />
+              <MailIcon />
             </Badge>
           </IconButton>
           <IconButton
